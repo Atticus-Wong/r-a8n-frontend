@@ -43,8 +43,7 @@ type ConfigPanelProps = {
 	onRouteChange?: (value: string) => void;
 	drivers: DriverOption[];
 	selectedDriverId?: string;
-	onSelectDriver?: (driverId: string | undefined)
-=> void;
+	onSelectDriver?: (driverId: string | undefined) => void;
 	riders: RiderOption[];
 	onToggleRider?: (riderId: string, selected: boolean) => void;
 	disabled?: boolean;
@@ -91,13 +90,13 @@ undefined : driverId;
 		>
 			<CardHeader className="space-y-1">
 				<CardTitle className="text-xl">Ride configuration</CardTitle>
-				<CardDescription> Adjust the route, driver, and riders before publishing.
+				<CardDescription> Select your church, driver, and riders.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6">
 				<section className="space-y-3" aria-label="Route selection">
 					<div className="flex items-center justify-between">
-						<span className="text-sm font-semibold tracking-tight">Route</span>
+						<span className="text-sm font-semibold tracking-tight">Group</span>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="outline" size="sm">
@@ -198,6 +197,10 @@ selectedDriverId;
 						)}
 					</div>
 				</section>
+				<Separator />
+				<div className="flex w-full justify-center">
+					<Button className="hover:cursor-pointer">Optimize Routes</Button>
+				</div>
 			</CardContent>
 		</Card>
 	);

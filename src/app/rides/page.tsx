@@ -201,7 +201,7 @@
         />
       </aside>
 
-      <section className="space-y-6 md:col-span-1 md:col-start-2">
+      <div className="space-y-6 md:col-span-1 md:col-start-2">
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">
             Ride summaries
@@ -220,7 +220,7 @@
             />
           ))}
         </div>
-      </section>
+      </div>
 
       <div aria-hidden className="hidden md:block md:col-span-1 md:col-start-3" />
     </main>
