@@ -49,14 +49,6 @@
     label: route.label,
   }));
 
-  const routeLookup: Record<string, RouteConfig> =
-  routes.reduce(
-    (acc, route) => {
-      acc[route.id] = route;
-      return acc;
-    },
-    {} as Record<string, RouteConfig>
-  );
 
   const drivers = [
     { id: "alex-johnson", name: "Alex Johnson" },
@@ -122,83 +114,10 @@
   ];
 
   export default function Rides() {
-    const defaultRouteId = routes[0]?.id ?? "";
-    const defaultDriverId = drivers[0]?.id;
-
-    const [selectedRouteId, setSelectedRouteId] = React.useState(defaultRouteId);
-    const [selectedDriverId, setSelectedDriverId] = React.useState<string | undefined>(defaultDriverId);
-    const [selectedRiders, setSelectedRiders] = React.useState<Set<string>>(
-      () =>
-        new Set(
-          riderRoster
-            .filter((rider) => rider.defaultSelected)
-            .map((rider) => rider.id)
-        )
-    );
-
-    const ridersForPanel = riderRoster.map((rider) => ({
-      id: rider.id,
-      name: rider.name,
-      selected: selectedRiders.has(rider.id),
-    }));
-
-    const activeRoute =
-      routeLookup[selectedRouteId] ??
-      routeLookup[defaultRouteId] ??
-      routes[0] ??
-      ({
-        id: "placeholder",
-        label: "Configure a route",
-        leaveTime: new Date().toISOString(),
-        routeLink: "https://maps.app.goo.gl/",
-        description: "Preview the ride summary card with configurable data.",
-      } satisfies RouteConfig);
-
-    const configuredSummary: RideSummary = {
-      driver:
-        drivers.find((driver) => driver.id ===
-  selectedDriverId)?.name ??
-        "Assign a driver",
-      leave_time: activeRoute.leaveTime,
-      route_link: activeRoute.routeLink,
-      riders: riderRoster
-        .filter((rider) =>
-  selectedRiders.has(rider.id))
-        .map((rider) => ({
-          name: rider.name,
-          latitude: rider.latitude,
-          longitude: rider.longitude,
-        })),
-    };
-
-    const handleToggleRider = React.useCallback(
-      (riderId: string, nextSelected: boolean) => {
-        setSelectedRiders((prev) => {
-          const next = new Set(prev);
-          if (nextSelected) {
-            next.add(riderId);
-          } else {
-            next.delete(riderId);
-          }
-          return next;
-        });
-      },
-      []
-    );
-
   return (
-    <main className="mx-auto grid w-full gap-6 p-6 md:grid-cols-3"> {/* max-w-7xl */}
+    <main className="mx-auto grid w-full grid-cols-1 gap-6 p-6 md:grid-cols-[minmax(0,_1fr)_minmax(0,_3fr)_minmax(0,_1fr)]"> {/* max-w-7xl */}
       <aside className="space-y-6 md:col-span-1">
-        <ConfigPanel
-          routeOptions={routeOptions}
-          selectedRoute={selectedRouteId}
-          onRouteChange={setSelectedRouteId}
-          drivers={drivers}
-          selectedDriverId={selectedDriverId}
-          onSelectDriver={setSelectedDriverId}
-          riders={ridersForPanel}
-          onToggleRider={handleToggleRider}
-        />
+        <ConfigPanel />
       </aside>
 
       <div className="space-y-6 md:col-span-1 md:col-start-2">
@@ -206,13 +125,9 @@
           <h1 className="text-2xl font-semibold tracking-tight">
             Ride summaries
           </h1>
-          <p className="text-sm text-muted-foreground">
-            {activeRoute.description}
-          </p>
         </header>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <SummaryCard summary={configuredSummary} />
           {additionalSummaries.map((summary) => (
             <SummaryCard
               key={`${summary.driver}-${summary.leave_time}`}

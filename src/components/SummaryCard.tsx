@@ -28,7 +28,7 @@ const SummaryCard = ({ summary }: SummaryCardProps) => {
 	const { driver, leave_time, route_link, riders } = summary;
 
 	return (
-		<Card className="w-full">
+		<Card className="w-full max-w-lg">
 			<CardHeader className="gap-1">
 				<CardTitle className="text-xl">{driver}</CardTitle>
 				<CardDescription>
