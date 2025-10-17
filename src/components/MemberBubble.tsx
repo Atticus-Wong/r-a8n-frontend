@@ -14,9 +14,8 @@
 
   const MemberBubble = React.forwardRef<HTMLButtonElement,
   MemberBubbleProps>(
-    ({ name, selected, onToggle, className,
-  onClick, ...props }, ref) => {
-      const isControlled = selected !== undefined;
+    ({ name, selected, onToggle, onClick, ...props }, ref) => { 
+			const isControlled = selected !== undefined;
       const [internalSelected, setInternalSelected] =
   React.useState(false);
       const isSelected = isControlled ? selected :
@@ -45,7 +44,7 @@
           variant="outline"
           aria-pressed={isSelected}
           data-selected={isSelected}
-          className={cn( "rounded-full px-4 py-1 text-sm font- medium transition-colors", "border-primary text-foreground bg- background hover:bg-primary/10", "data-[selected=true]:border- primary data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:hover:bg-primary/90", className
+					className={cn( "rounded-full px-4 py-1 transition-colors", "hover:bg-primary/10", "data-[selected=true]:border- primary data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground data-[selected=true]:hover:bg-primary/90"
           )}
           onClick={handleClick}
           {...props}
