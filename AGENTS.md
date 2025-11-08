@@ -25,13 +25,6 @@
   - Keep JSX indented with 2 spaces and rely on Prettier defaults or editor format-
   on-save.
 
-  ## Testing Guidelines
-  - Introduce Playwright or Jest/React Testing Library for coverage; co-locate tests
-  with components (e.g., `src/components/Button.test.tsx`).
-  - Name tests after the module and behavior (`Button toggles active state`).
-  - Cover UX-critical flows and regression-prone logic; document untested areas in pull
-  requests.
-
   ## Commit & Pull Request Guidelines
   - Follow conventional commits (`feat: add hero CTA`, `fix: correct footer link`) to
   keep history readable.
