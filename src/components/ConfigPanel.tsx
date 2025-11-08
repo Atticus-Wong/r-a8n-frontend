@@ -11,11 +11,26 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { MemberBubble } from "@/components/MemberBubble";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-
+import { ChevronDown } from "lucide-react";
+import { useAppStore } from "@/utils/store";
+import { handleLoadMembersForGroup } from "@/utils/handler";
 
 const ConfigPanel: React.FC = () => {
+	const { membersFromGroup, changeMembersFromGroup, group, changeGroup, allGroups } = useAppStore();
+	const hasGroups = allGroups.length > 0;
+
+	React.useEffect(() => {
+		handleLoadMembersForGroup({groupId: group.group_id, onMembers: changeMembersFromGroup})
+	}, [group.group_id, changeMembersFromGroup])
 
 	return (
 		<Card
@@ -35,15 +50,46 @@ const ConfigPanel: React.FC = () => {
 				<section className="space-y-3" aria-label="Route selection">
 					<div className="flex items-center justify-between">
 						<span className="text-sm font-semibold tracking-tight">Group</span>
-						<Button
-							variant="outline"
-							size="sm"
-							disabled
-							className="pointer-events-none"
-						>
-							Church
-							{/*insert logic for choosing which church to choose*/}
-						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="outline"
+									size="sm"
+									className="flex items-center gap-1"
+								>
+									{group?.abbreviation ?? "Select group"}
+									<ChevronDown className="size-3.5" aria-hidden />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end" className="w-48">
+								<DropdownMenuLabel>Select a church</DropdownMenuLabel>
+								<Separator />
+								<DropdownMenuRadioGroup
+									value={hasGroups ? (group?.group_id ?? "") : ""}
+									onValueChange={(groupId) => {
+										const nextGroup = allGroups.find(
+											(option) => option.group_id === groupId,
+										);
+										if (nextGroup) changeGroup(nextGroup);
+									}}
+								>
+									{hasGroups ? (
+										allGroups.map((option) => (
+											<DropdownMenuRadioItem
+												key={option.group_id}
+												value={option.group_id}
+											>
+												{option.name}
+											</DropdownMenuRadioItem>
+										))
+									) : (
+										<DropdownMenuRadioItem value="" disabled>
+											Loading groups…
+										</DropdownMenuRadioItem>
+									)}
+								</DropdownMenuRadioGroup>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 					<p className="text-xs text-muted-foreground">
 						Routes control the pickup order and directions we surface to riders.
