@@ -18,7 +18,7 @@
 
   ## Coding Style & Naming Conventions
   - Use TypeScript (`.ts`/`.tsx`) with strict mode; prefer functional React components.
-  - Lean on Tailwind utility classes for styling; add custom tokens in `globals.css`
+  - Lean on Tailwind utility classes for styling and pre-built components in @src/components/ui; add custom tokens in `globals.css`
   only when utilities fall short.
   - PascalCase components (`HeroSection.tsx`), camelCase hooks/helpers
   (`useCounter.ts`), and kebab-case asset filenames.

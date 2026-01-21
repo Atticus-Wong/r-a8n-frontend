@@ -1,138 +1,61 @@
-  "use client";
+"use client";
 
-  import { ConfigPanel } from "@/components/ConfigPanel";
-  import { SummaryCard } from "@/components/SummaryCard";
+import * as React from "react";
+import { ConfigPanel } from "@/components/ConfigPanel";
+import { useAppStore } from "@/utils/store";
+import { Skeleton } from "@/components/ui/skeleton";
 
-  type RouteConfig = {
-    id: string;
-    label: string;
-    routeLink: string;
-    description: string;
-  };
+export default function Rides() {
+  const { membersFromGroup, isFetchingMembers } = useAppStore();
 
-  type RiderConfig = {
-    id: string;
-    name: string;
-    latitude: number;
-    longitude: number;
-    defaultSelected?: boolean;
-  };
-
-  const routes: RouteConfig[] = [
-    {
-      id: "midtown-shuttle",
-      label: "Midtown shuttle",
-      routeLink: "https://maps.app.goo.gl/sample-route-alex",
-      description: "Weekday commute from Davis to Midtown Sacramento.",
-    },
-    {
-      id: "campus-loop",
-      label: "Campus loop",
-      routeLink: "https://maps.app.goo.gl/sample-route-sarah",
-      description: "Morning pickup loop covering the east campus apartments.",
-    },
-    {
-      id: "farmers-market",
-      label: "Farmers Market express",
-      routeLink: "https://maps.app.goo.gl/sample-route-daniel",
-      description: "Saturday shuttle to the Davis Farmers Market.",
-    },
-  ];
-
-  const routeOptions = routes.map((route) => ({
-    value: route.id,
-    label: route.label,
-  }));
-
-
-  const drivers = [
-    { id: "alex-johnson", name: "Alex Johnson" },
-    { id: "sarah-lee", name: "Sarah Lee" },
-    { id: "daniel-kim", name: "Daniel Kim" },
-  ];
-
-  const riderRoster: RiderConfig[] = [
-    {
-      id: "priya-k",
-      name: "Priya K.",
-      latitude: 38.5449,
-      longitude: -121.7405,
-      defaultSelected: true,
-    },
-    {
-      id: "marco-l",
-      name: "Marco L.",
-      latitude: 38.5382,
-      longitude: -121.7617,
-      defaultSelected: true,
-    },
-    {
-      id: "jamie-w",
-      name: "Jamie W.",
-      latitude: 38.5513,
-      longitude: -121.7598,
-    },
-    {
-      id: "luis-r",
-      name: "Luis R.",
-      latitude: 38.5301,
-      longitude: -121.7526,
-    },
-    {
-      id: "anya-p",
-      name: "Anya P.",
-      latitude: 38.5357,
-      longitude: -121.7469,
-    },
-  ];
-
-  const additionalSummaries: RideSummary[] = [
-    {
-      driver: "Sarah Lee",
-      leave_time: "2024-08-12T08:15:00.000Z",
-      route_link: "https://maps.app.goo.gl/sample-route-sarah",
-      riders: [
-        { name: "Jamie W.", latitude: 38.5513, longitude: -121.7598 },
-        { name: "Luis R.", latitude: 38.5301, longitude: -121.7526 },
-        { name: "Anya P.", latitude: 38.5357, longitude: -121.7469 },
-      ],
-    },
-    {
-      driver: "Daniel Kim",
-      leave_time: "2024-08-12T09:00:00.000Z",
-      route_link: "https://maps.app.goo.gl/sample-route-daniel",
-      riders: [
-        { name: "Priya K.", latitude: 38.5449, longitude: -121.7405 },
-        { name: "Marco L.", latitude: 38.5382, longitude: -121.7617 },
-      ],
-    },
-  ];
-
-  export default function Rides() {
   return (
-    <main className="mx-auto grid w-full grid-cols-1 gap-6 p-6 md:grid-cols-[minmax(0,_1fr)_minmax(0,_3fr)_minmax(0,_1fr)]"> {/* max-w-7xl */}
+    <main className="mx-auto grid w-full grid-cols-1 gap-6 p-6 md:grid-cols-[minmax(0,_1fr)_minmax(0,_3fr)]"> {/* max-w-7xl */}
       <aside className="space-y-6 md:col-span-1">
         <ConfigPanel />
       </aside>
 
-      <div className="space-y-6 md:col-span-1 md:col-start-2">
+      <div className="space-y-6 md:col-span-2 md:col-start-2">
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Ride summaries
+            Members
           </h1>
+          <p className="text-sm text-muted-foreground">
+            {isFetchingMembers ? "Loading members..." : `${membersFromGroup.length} members found.`}
+          </p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {additionalSummaries.map((summary) => (
-            <SummaryCard
-              key={`${summary.driver}-${summary.leave_time}`}
-              summary={summary}
-            />
-          ))}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {isFetchingMembers ? (
+             Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-4 border rounded-lg bg-card text-card-foreground shadow-sm">
+                  <div className="space-y-2 w-full">
+                    <Skeleton className="h-4 w-[150px]" />
+                    <Skeleton className="h-3 w-[100px]" />
+                  </div>
+                </div>
+             ))
+          ) : membersFromGroup.length === 0 ? (
+            <div className="col-span-full text-center text-muted-foreground py-8">
+              No members loaded. Select a church and fetch data.
+            </div>
+          ) : (
+            membersFromGroup.map((member) => (
+              <div key={member.id} className="flex items-center justify-between p-4 border rounded-lg bg-card text-card-foreground shadow-sm">
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">{member.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {member.contact_info?.phone || "No phone"}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-1 text-sm text-muted-foreground">
+                    {member.service_time && <span>{member.service_time}</span>}
+                    {member.pickup_location && <span>{member.pickup_location}</span>}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
-
-      <div aria-hidden className="hidden md:block md:col-span-1 md:col-start-3" />
     </main>
   );
 }
