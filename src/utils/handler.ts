@@ -1,4 +1,5 @@
 
+import { Member, Group } from "@/types/summary";
 
 type LoadMembersArgs = {
 	groupId: string;
@@ -28,6 +29,33 @@ async function handleLoadMembersForGroup({ groupId, onMembers }: LoadMembersArgs
 	}
 }
 
+type fetchGroupMembersArgs = {
+	onChange: (group: Group[]) => void
+}
+
+async function fetchGroupMembers({ onChange }: fetchGroupMembersArgs) {
+	try {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_SERVER_URL}/db/select/groups`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`Failed to fetch groups: ${response.status}`);
+		}
+
+		const data = await response.json();
+
+		onChange(data.groups);
+		console.log("Fetched all groups:", data.groups);
+	} catch (error) {
+		console.error("Error fetching members:", error);
+	}
+}
+
 export {
-	handleLoadMembersForGroup
+	handleLoadMembersForGroup,
+	fetchGroupMembers
 }
